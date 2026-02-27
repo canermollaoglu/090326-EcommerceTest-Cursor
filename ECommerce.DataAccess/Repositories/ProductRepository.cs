@@ -9,7 +9,7 @@ namespace ECommerce.DataAccess.Repositories
     using ECommerce.DataAccess.Context;
     using Microsoft.EntityFrameworkCore;
 
-    public class ProductRepository : GenericRepository<Product>
+    public class ProductRepository : GenericRepository<Product>, IProductRepository
     {
         private readonly AppDbContext _context;
         public ProductRepository(AppDbContext context) : base(context)
