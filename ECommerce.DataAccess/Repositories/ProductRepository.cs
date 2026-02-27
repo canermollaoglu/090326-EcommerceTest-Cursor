@@ -11,11 +11,34 @@ namespace ECommerce.DataAccess.Repositories
 
     public class ProductRepository : GenericRepository<Product>
     {
+        private readonly AppDbContext _context;
         public ProductRepository(AppDbContext context) : base(context)
         {
-
+            _context = context;
         }
 
         // Ürünlere özel ek veri erişim yöntemleri buraya eklenebilir
+
+        public async Task<IEnumerable<Product>> GetByCategoryIdAsync(Guid categoryId)
+        {
+            return await _context.Products
+            .Where(p => p.CategoryId == categoryId)
+
+            .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Product>> GetProductsWithCategory()
+        {
+            return await _context.Products
+            .Include(p => p.Category)
+            .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Product>> GetByPriceRange(decimal minPrice, decimal maxPrice)
+        {
+            return await _context.Products
+            .Where(p => p.Price >= minPrice && p.Price <= maxPrice)
+            .ToListAsync();
+        }
     }
 }

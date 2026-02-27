@@ -7,7 +7,7 @@ namespace ECommerce.Core.Entities
         public decimal Price { get; set; }
         public int StockQuantity { get; set; }
 
-        public int CategoryId { get; set; }
+        public Guid CategoryId { get; set; }
         public Category? Category { get; set; }
     }
 }
