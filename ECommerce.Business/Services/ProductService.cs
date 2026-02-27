@@ -8,10 +8,10 @@ namespace ECommerce.Business.Services
 {
     public class ProductService : IService<Product>
     {
-        private readonly ProductRepository _repository;
-        public ProductService(ProductRepository pRepo)
+        private readonly IUnitOfWork _unitOfWork;
+        public ProductService(IUnitOfWork unitOfWork)
         {
-            _repository = pRepo;
+            _unitOfWork = unitOfWork;
         }
         public async Task AddAsync(Product product)
         {
@@ -22,39 +22,39 @@ namespace ECommerce.Business.Services
             if (product.StockQuantity < 0)
                 throw new Exception("Stok negatif olamaz");
 
-            await _repository.AddAsync(product);
-            await _repository.SaveChangesAsync();
+            await _unitOfWork.Products.AddAsync(product);
+            await _unitOfWork.SaveChangesAsync();
         }
 
         public Task<IEnumerable<Product>> FindAsync(Expression<Func<Product, bool>> predicate)
         {
-            return _repository.FindAsync(predicate);
+            return _unitOfWork.Products.FindAsync(predicate);
         }
 
         public async Task<IEnumerable<Product>> GetAllAsync()
         {
-            return await _repository.GetAllAsync();
+            return await _unitOfWork.Products.GetAllAsync();
         }
 
         public async Task<Product?> GetByIdAsync(Guid id)
         {
-            return await _repository.GetByIdAsync(id);
+            return await _unitOfWork.Products.GetByIdAsync(id);
         }
 
         public async Task RemoveAsync(Guid id)
         {
-            var product = await _repository.GetByIdAsync(id);
+            var product = await _unitOfWork.Products.GetByIdAsync(id);
 
             if (product == null)
                 throw new Exception("Ürün bulunamadı.");
 
-            await _repository.RemoveAsync(product);
-            await _repository.SaveChangesAsync();
+            await _unitOfWork.Products.RemoveAsync(product);
+            await _unitOfWork.Products.SaveChangesAsync();
         }
 
         public async Task UpdateAsync(Product product)
         {
-            var existingProduct = await _repository.GetByIdAsync(product.Id);
+            var existingProduct = await _unitOfWork.Products.GetByIdAsync(product.Id);
 
             if (existingProduct == null)
                 throw new Exception("Ürün bulunamadı");
@@ -63,8 +63,8 @@ namespace ECommerce.Business.Services
             existingProduct.Price = product.Price;
             existingProduct.StockQuantity = product.StockQuantity;
 
-            await _repository.UpdateAsync(existingProduct);
-            await _repository.SaveChangesAsync();
+            await _unitOfWork.Products.UpdateAsync(existingProduct);
+            await _unitOfWork.Products.SaveChangesAsync();
         }
     }
 }

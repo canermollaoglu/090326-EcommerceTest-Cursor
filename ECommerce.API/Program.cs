@@ -1,6 +1,7 @@
 using ECommerce.Business.Services;
 using ECommerce.Core.Entities;
 using ECommerce.Core.Interfaces;
+using ECommerce.DataAccess;
 using ECommerce.DataAccess.Context;
 using ECommerce.DataAccess.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -22,12 +23,20 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// 1. Generic Repository
-builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+/*
+“Uygulama içinde biri IUnitOfWork isterse, ona UnitOfWork ver.”
+Yani:
+IUnitOfWork → Interface
+UnitOfWork → Gerçek sınıf (Concrete class)
 
-// 2. Product için Özel Servis
-//Programın herhangi bir yerinde IProductService veya IService<Product> talep edildiğinde, ProductService sınıfının bir örneği sağlanır. Dolayısı ile new ProductService() ifadesi yerine, bağımlılık enjeksiyonu konteyneri tarafından yönetilen bir örnek sağlanır. Bu, uygulamanın daha esnek ve test edilebilir olmasını sağlar.
+Bu Dependency Injection (DI) kaydıdır.
+*/
+//UnitOfWork
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+// ProductService
 builder.Services.AddScoped<IService<Product>, ProductService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

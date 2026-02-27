@@ -3,7 +3,7 @@ using ECommerce.Core.Entities;
 namespace ECommerce.Core.Interfaces
 {
 
-    public interface IProductRepository
+    public interface IProductRepository : IGenericRepository<Product>
     {
         public Task<IEnumerable<Product>> GetByCategoryIdAsync(Guid categoryId);
         public Task<IEnumerable<Product>> GetProductsWithCategory();
