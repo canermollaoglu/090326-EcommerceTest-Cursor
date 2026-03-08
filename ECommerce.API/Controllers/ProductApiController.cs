@@ -93,7 +93,12 @@ namespace ECommerce.API.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                var message = ex.Message ?? "Ürün eklenirken hata oluştu.";
+                if (message.Contains("kategori bulunamadı", StringComparison.OrdinalIgnoreCase))
+                    return BadRequest(message);
+                if (message.Contains("foreign key", StringComparison.OrdinalIgnoreCase) || message.Contains("FK_"))
+                    return BadRequest("Belirtilen kategori bulunamadı. Geçerli bir CategoryId kullanın veya önce kategori ekleyin.");
+                return BadRequest(message);
             }
 
             //burada sayfaya tekrar productresponse dto'sunu döndürüyoruz çünkü client'ın yeni oluşturulan ürünün detaylarını görmesi iyi olur. Ayrıca, CreatedAtAction kullanarak HTTP 201 döndürüyoruz ve Location başlığına GET by id endpoint'ini ekliyoruz. Böylece, client yeni oluşturulan ürüne kolayca erişebilir.

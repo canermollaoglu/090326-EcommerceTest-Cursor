@@ -25,6 +25,10 @@ namespace ECommerce.Business.Services
             if (product.StockQuantity < 0)
                 throw new Exception("Stok negatif olamaz");
 
+            var category = await _unitOfWork.Categories.GetByIdAsync(product.CategoryId);
+            if (category is null)
+                throw new Exception("Belirtilen kategori bulunamadı. Geçerli bir CategoryId kullanın veya önce kategori ekleyin.");
+
             await _unitOfWork.Products.AddAsync(product);
             await _unitOfWork.SaveChangesAsync();
         }
@@ -66,8 +70,10 @@ namespace ECommerce.Business.Services
                 throw new Exception("Ürün bulunamadı");
 
             existingProduct.ProductName = product.ProductName;
+            existingProduct.Description = product.Description;
             existingProduct.Price = product.Price;
             existingProduct.StockQuantity = product.StockQuantity;
+            existingProduct.CategoryId = product.CategoryId;
 
             await _unitOfWork.Products.UpdateAsync(existingProduct);
             await _unitOfWork.SaveChangesAsync();
