@@ -4,3 +4,7 @@ obj/
 *.user
 *.suo
 *.pdb
+
+# React client (node_modules asla push edilmesin)
+client/node_modules/
+client/dist/
