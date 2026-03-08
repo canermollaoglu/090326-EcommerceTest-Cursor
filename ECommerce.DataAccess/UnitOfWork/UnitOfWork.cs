@@ -21,6 +21,7 @@ namespace ECommerce.DataAccess
         private readonly AppDbContext _context;
         public UnitOfWork(AppDbContext context)
         {
+            ArgumentNullException.ThrowIfNull(context);
             _context = context;
             Products = new ProductRepository(_context);
             Categories = new CategoryRepository(_context);

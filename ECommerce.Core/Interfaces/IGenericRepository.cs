@@ -14,6 +14,5 @@ namespace ECommerce.Core.Interfaces
         Task AddAsync(T entity);
         Task RemoveAsync(T entity);
         Task UpdateAsync(T entity);
-        Task SaveChangesAsync();
     }
 }

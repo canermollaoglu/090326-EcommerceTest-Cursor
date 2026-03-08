@@ -15,6 +15,9 @@ namespace ECommerce.Business.Services
         }
         public async Task AddAsync(Product product)
         {
+            if (product is null)
+                throw new ArgumentNullException(nameof(product), "Ürün null olamaz.");
+
             // ✅ İş kuralı SERVİS'TE
             if (product.Price <= 0)
                 throw new Exception("Ürün fiyatı 0 veya negatif olamaz");
@@ -45,18 +48,21 @@ namespace ECommerce.Business.Services
         {
             var product = await _unitOfWork.Products.GetByIdAsync(id);
 
-            if (product == null)
+            if (product is null)
                 throw new Exception("Ürün bulunamadı.");
 
             await _unitOfWork.Products.RemoveAsync(product);
-            await _unitOfWork.Products.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync();
         }
 
         public async Task UpdateAsync(Product product)
         {
+            if (product is null)
+                throw new ArgumentNullException(nameof(product), "Ürün null olamaz.");
+
             var existingProduct = await _unitOfWork.Products.GetByIdAsync(product.Id);
 
-            if (existingProduct == null)
+            if (existingProduct is null)
                 throw new Exception("Ürün bulunamadı");
 
             existingProduct.ProductName = product.ProductName;
@@ -64,7 +70,7 @@ namespace ECommerce.Business.Services
             existingProduct.StockQuantity = product.StockQuantity;
 
             await _unitOfWork.Products.UpdateAsync(existingProduct);
-            await _unitOfWork.Products.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync();
         }
     }
 }

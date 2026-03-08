@@ -15,17 +15,20 @@ namespace ECommerce.DataAccess.Repositories
         private readonly DbSet<T> _dbSet;
         public GenericRepository(AppDbContext context)
         {
+            ArgumentNullException.ThrowIfNull(context);
             _context = context;
             _dbSet = _context.Set<T>();
         }
 
         public async Task AddAsync(T entity)
         {
+            ArgumentNullException.ThrowIfNull(entity);
             await _dbSet.AddAsync(entity);
         }
 
         public async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate)
         {
+            ArgumentNullException.ThrowIfNull(predicate);
             return await _dbSet.Where(predicate).ToListAsync();
         }
 
@@ -41,17 +44,14 @@ namespace ECommerce.DataAccess.Repositories
 
         public Task RemoveAsync(T entity)
         {
+            ArgumentNullException.ThrowIfNull(entity);
             _dbSet.Remove(entity);
             return Task.CompletedTask;
         }
 
-        public async Task SaveChangesAsync()
-        {
-            await _context.SaveChangesAsync();
-        }
-
         public Task UpdateAsync(T entity)
         {
+            ArgumentNullException.ThrowIfNull(entity);
             _context.Update(entity);
             return Task.CompletedTask;
         }

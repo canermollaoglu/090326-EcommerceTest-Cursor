@@ -82,6 +82,9 @@ namespace ECommerce.API.Controllers
             // ProductCreateDto, ürün oluşturmak için gerekli olan bilgileri içerir ancak Id alanı genellikle istemciden gelmez çünkü bu Id, veritabanında yeni bir kayıt oluşturulurken otomatik olarak oluşturulur (örneğin, Guid.NewGuid() ile). Bu nedenle, AutoMapper, ProductCreateDto'dan Product'a maplerken Id alanını doldurmaz.
             // Bu yüzden, mapleme işleminden sonra manuel olarak product.Id'ye yeni bir Guid atıyoruz. Bu, yeni oluşturulan ürünün benzersiz bir kimliğe sahip olmasını sağlar ve veritabanında kaydedilirken bu Id kullanılabilir.
             var product = _mapper.Map<Product>(dto);
+            if (product is null)
+                return BadRequest("Ürün oluşturulamadı.");
+
             product.Id = Guid.NewGuid();
 
             try
@@ -122,6 +125,8 @@ namespace ECommerce.API.Controllers
                 return BadRequest("Route id and product id must match.");
 
             var product = _mapper.Map<Product>(dto);
+            if (product is null)
+                return BadRequest("Ürün güncellenemedi.");
 
             try
             {
@@ -129,9 +134,10 @@ namespace ECommerce.API.Controllers
             }
             catch (Exception ex)
             {
-                if (ex.Message.Contains("bulunamadı", StringComparison.OrdinalIgnoreCase))
-                    return NotFound(ex.Message);
-                return BadRequest(ex.Message);
+                var message = ex.Message ?? string.Empty;
+                if (message.Contains("bulunamadı", StringComparison.OrdinalIgnoreCase))
+                    return NotFound(message);
+                return BadRequest(message);
             }
             // Return HTTP 204 No Content when update succeeds.
             return NoContent();
@@ -149,14 +155,12 @@ namespace ECommerce.API.Controllers
             }
             catch (Exception ex)
             {
-                // Map missing product case to 404; otherwise return 400.
-                if (ex.Message.Contains("not found", StringComparison.OrdinalIgnoreCase) ||
-                    ex.Message.Contains("bulunamadı", StringComparison.OrdinalIgnoreCase))
-                {
-                    return NotFound(ex.Message);
-                }
+                var message = ex.Message ?? string.Empty;
+                if (message.Contains("not found", StringComparison.OrdinalIgnoreCase) ||
+                    message.Contains("bulunamadı", StringComparison.OrdinalIgnoreCase))
+                    return NotFound(message);
 
-                return BadRequest(ex.Message);
+                return BadRequest(message);
             }
 
             // Return HTTP 204 when delete succeeds.

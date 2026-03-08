@@ -16,7 +16,7 @@ namespace ECommerce.Business.Mapping
             CreateMap<ProductUpdateDto, Product>();
             //Product Entitysini ProductResponseDto'ya maplerken CategoryName property'sini Category Entity'sinin Name property'sinden alacak şekilde yapılandırıyoruz.
             CreateMap<Product, ProductResponseDto>()
-                .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name));
+                .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category != null ? src.Category.Name : null));
 
         }
     }
