@@ -1,3 +1,4 @@
+using ECommerce.Business.Mapping;
 using ECommerce.Business.Services;
 using ECommerce.Core.Entities;
 using ECommerce.Core.Interfaces;
@@ -22,6 +23,10 @@ builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddAutoMapper(cfg =>
+{
+    cfg.AddProfile<ProductMappingProfile>();
+});
 
 /*
 “Uygulama içinde biri IUnitOfWork isterse, ona UnitOfWork ver.”
